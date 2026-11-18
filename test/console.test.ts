@@ -54,7 +54,14 @@ describe("passwords", () => {
     const out = execFileSync(
       (globalThis as unknown as { process: { execPath: string } }).process
         .execPath,
-      ["scripts/create-admin.mjs", "owner@example.com", "Owner"],
+      [
+        new URL(
+          "../scripts/create-admin.mjs",
+          (import.meta as unknown as { url: string }).url,
+        ).pathname,
+        "owner@example.com",
+        "Owner",
+      ],
       { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
     );
     const hash = /'(pbkdf2\$[^']+)'/.exec(out)![1]!;
