@@ -1,0 +1,74 @@
+# cfmail: Resend-compatible email API + dashboard + webmail, one Worker.
+# Every value is explained in docs/setup.md. Replace the REPLACE_ME values.
+
+name = "cfmail"
+main = "src/index.ts"
+compatibility_date = "2026-08-22"
+# account_id = "REPLACE_ME"          # or use CLOUDFLARE_ACCOUNT_ID
+
+# Build the dashboard bundle before `wrangler dev` / `wrangler deploy`.
+[build]
+command = "npm run build:ui"
+watch_dir = "ui"
+
+# Dashboard + webmail static files (/app/). Served before the Worker runs, and
+# static asset requests are free.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# Public hostname for the API and the dashboard. workers.dev stays off.
+workers_dev = false
+# routes = [{ pattern = "mail.example.com", custom_domain = true }]
+
+# Inbound: Email Routing rules that deliver to this Worker (wrangler >= 4.113).
+# "*@domain" = catch-all. You can also create the rules in the dashboard.
+# addresses = ["*@example.com"]
+
+[observability]
+enabled = true
+
+[vars]
+# Domains allowed in `from` (comma separated). Each must be onboarded in
+# Email Service → Email Sending. Empty = any onboarded domain.
+SEND_DOMAINS = ""
+# Domains whose inbound mail is accepted. Empty = every domain routed here.
+INBOUND_DOMAINS = ""
+# cloudflare = Email Sending binding (Workers Paid)
+# resend     = relay outbound mail to Resend (secret RESEND_API_KEY)
+# log        = record only, send nothing (local development)
+SEND_MODE = "cloudflare"
+# Public base URL (attachment links, invite links, CSRF origin check).
+PUBLIC_ORIGIN = "https://mail.example.com"
+# Sender for invite and password-reset emails. Empty = links are only shown
+# to the admin who created them.
+SYSTEM_FROM = ""
+
+# Secrets (never in this file):
+#   HASH_SECRET     wrangler secret put HASH_SECRET   (required, 32+ random bytes)
+#   RESEND_API_KEY  only for SEND_MODE = "resend"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cfmail"
+database_id = "REPLACE_ME"           # wrangler d1 create cfmail
+migrations_dir = "migrations"
+
+# Outbound: Email Service send binding.
+[[send_email]]
+name = "EMAIL"
+
+# Optional R2 bucket for attachments and raw .eml copies. Without it,
+# attachments up to 1.5 MB are kept in D1 and larger ones are not stored.
+# [[r2_buckets]]
+# binding = "BUCKET"
+# bucket_name = "cfmail"
+
+[[ratelimits]]
+name = "API_LIMIT"
+namespace_id = "5101"                # unique per account
+simple = { limit = 600, period = 60 }
+
+# Optional cron for webhook retries (they also run on inbound mail and API use).
+# [triggers]
+# crons = ["*/5 * * * *"]

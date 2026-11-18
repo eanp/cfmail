@@ -1,0 +1,17 @@
+.DS_Store
+node_modules/
+dist/
+.wrangler/
+coverage/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.env
+.env.*
+*.log
+.tmp/
+*.sql.tmp
+key.sql
+admin.sql
+public/app/app.js
+public/app/app.js.map

@@ -1,0 +1,53 @@
+{
+  "name": "cfmail",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Self-hosted, Resend-compatible email API, dashboard and webmail on Cloudflare (Email Routing + Email Sending, D1, R2).",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build:ui": "esbuild ui/main.tsx --bundle --minify --format=esm --target=es2022 --jsx=automatic --jsx-import-source=preact --outfile=public/app/app.js --sourcemap",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p ui",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run typecheck && npm test && npm run format:check && npm run build:ui",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "deploy": "npm run check && npm run db:migrate:remote && wrangler deploy",
+    "tail": "wrangler tail --format pretty"
+  },
+  "dependencies": {
+    "postal-mime": "4.2.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261112.1",
+    "prettier": "3.10.1",
+    "typescript": "5.9.3",
+    "vitest": "4.1.12",
+    "wrangler": "4.129.0",
+    "esbuild": "0.28.1",
+    "preact": "10.29.8"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eanp/cfmail.git"
+  },
+  "homepage": "https://github.com/eanp/cfmail#readme",
+  "bugs": {
+    "url": "https://github.com/eanp/cfmail/issues"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "email",
+    "resend",
+    "webmail",
+    "email-routing",
+    "d1",
+    "self-hosted"
+  ]
+}

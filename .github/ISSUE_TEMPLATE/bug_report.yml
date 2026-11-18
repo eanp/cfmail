@@ -1,0 +1,34 @@
+name: Bug report
+description: Something doesn't work as documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! **Never paste secrets**: API keys, `HASH_SECRET`, passwords, webhook secrets or real email content.
+        Security issues: please use *Security → Report a vulnerability* instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: cfmail version and SEND_MODE
+      placeholder: 0.2.0, cloudflare
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log lines (`npm run tail`)
+      render: text

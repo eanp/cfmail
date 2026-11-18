@@ -1,0 +1,4 @@
+# Copy to .dev.vars for `npm run dev`. Never commit .dev.vars.
+HASH_SECRET=change-me-to-a-long-random-string
+SEND_MODE=log
+PUBLIC_ORIGIN=http://localhost:8787
